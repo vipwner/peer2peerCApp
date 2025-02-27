@@ -35,7 +35,6 @@ void server_process(int PORT);
 void client_process(int PORT);
 int writeSocket(int file_descriptor, char *buffer, int len);
 int readSocket(int file_descriptor, char *buffer, int len);
-void p2p();
 
 #endif
 

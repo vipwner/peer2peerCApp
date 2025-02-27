@@ -480,18 +480,3 @@ int readSocket(int file_descriptor, char *buffer, int len) {
     printf("Bytes leidos: %d\n", readed);
     return readed;
 }
-
-void p2p()
-{	
-	const int PORT = 7024;
-	// Se crean los hilos...
-	pid_t pid = init_thread();
-	if(pid){
-		// Proceso Servidor...
-		server_process(PORT);
-	}else{
-		while(1){
-			client_process(PORT);
-		}		
-	}
-}

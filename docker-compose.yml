@@ -1,0 +1,23 @@
+services:
+  p2p_server:
+    build: .
+    container_name: p2p_server
+    working_dir: /usr/local/bin
+    command: ["/usr/local/bin/p2p_server"]
+    ports:
+      - "7024:7024"
+    volumes:
+      - ./p2p_app:/app/p2p_app
+    restart: unless-stopped
+
+  p2p_client:
+    build: .
+    container_name: p2p_client
+    working_dir: /usr/local/bin
+    command: ["/usr/local/bin/p2p_client"]
+    stdin_open: true
+    tty: true
+    depends_on:
+      - p2p_server
+    volumes:
+      - ./p2p_app:/app/p2p_app

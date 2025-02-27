@@ -2,7 +2,7 @@
 # C Compiler.
 CC = gcc
 # Program name.
-PRO = Program
+PRO = torrent_generator
 # Files...
 MAIN = Main
 TORG = TorrentGenerator
