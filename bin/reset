@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -e
+
+function echoInfo {
+    echo -e "\033[0;34m$1\033[0m"
+}
+
+function echoError {
+    echo -e "\033[0;31m$1\033[0m"
+}
+
+function resetAll {
+    echoInfo "🗑️  Resetting everything, including database & torrents 🗑️"
+    docker compose down --volumes --remove-orphans
+    docker system prune --all --force
+    docker volume prune --all --force
+    docker compose up -d --build
+}
+
+function resetP2P {
+    echoInfo "🔄 Resetting P2P app (server & client)..."
+    docker compose stop p2p_server p2p_client
+    docker compose rm -f p2p_server p2p_client
+    docker compose up -d --build p2p_server p2p_client
+}
+
+function resetTorrent {
+    echoInfo "🔄 Resetting Torrent Generator..."
+    docker compose stop torrent_generator
+    docker compose rm -f torrent_generator
+    docker compose up -d --build torrent_generator
+}
+
+function nukeAll {
+    echoInfo "☢️  Nuking everything docker related ☢️"
+    docker compose down --volumes --remove-orphans
+    docker system prune --all --force
+    docker volume prune --all --force
+    docker compose up -d --build
+}
+
+function printHelp {
+    echo -e "Usage: bin/reset [arguments]
+-a, --all          Reset everything (P2P app & Torrent Generator)
+-p, --p2p          Reset only P2P (server & client)
+-t, --torrent      Reset only Torrent Generator
+-n, --nuke         Reset *everything* docker related
+Alternatively, run bin/reset without arguments to access the interactive menu."
+}
+
+function showMenu {
+    echo -ne "
+This script lets you reset (parts of) your P2P & Torrent environment.
+1) Reset everything (P2P + Torrent)      (bin/reset --all)
+2) Reset P2P app (server & client)       (bin/reset --p2p)
+3) Reset Torrent Generator               (bin/reset --torrent)
+4) Nuke everything docker related        (bin/reset --nuke)
+q) Exit
+Please choose the kind of reset you want to run [1]: "
+    read input
+    case $input in
+        "") resetAll; exit ;;
+        1) resetAll; exit ;;
+        2) resetP2P; exit ;;
+        3) resetTorrent; exit ;;
+        4) nukeAll; exit ;;
+        q) echoInfo "\nExiting, happy coding!"; exit 0 ;;
+        *) echoError "\nInvalid option $input: aborting bin/reset!"; exit 1 ;;
+    esac
+}
+
+# If no argument is supplied, show interactive menu
+if [ $# -eq 0 ]
+then
+    showMenu
+else
+    case "$1" in
+        -a | --all ) resetAll; exit ;;
+        -p | --p2p ) resetP2P; exit ;;
+        -t | --torrent ) resetTorrent; exit ;;
+        -n | --nuke ) nukeAll; exit ;;
+        -h | --help ) printHelp; exit ;;
+        * ) echoError "\nInvalid parameter $1: aborting bin/reset!"; exit 1 ;;
+    esac
+fi

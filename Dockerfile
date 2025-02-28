@@ -2,7 +2,7 @@
 FROM debian:latest
 
 # Install dependencies
-RUN apt-get update && apt-get install -y gcc make && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gcc make valgrind && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -20,4 +20,4 @@ WORKDIR /app/torrent_generator
 RUN make && mv torrent_generator /usr/local/bin/
 
 # Set default working directory
-WORKDIR /app/p2p_app
+WORKDIR /app

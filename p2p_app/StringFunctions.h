@@ -44,7 +44,7 @@ char* substr_(char string[], int start, int length);
  * @param  char2 [Cadena de caracteres.]
  * @return char* [Cadena concatenada.]
  */
-char* concat(char* char1, char* char2);
+char* concat(const char* char1, const char* char2);
 /**
  * [concat Metodo encargado de concatenar una cadena de caract. con un caracter.]
  * @param  char1 [Cadena de caracteres.]

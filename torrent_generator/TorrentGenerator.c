@@ -9,11 +9,8 @@ int generateTorrent(char *fileName)
     // Definiciones...
     int CHUNK_TAM = 512*1024;
     int MAX_BUF_TAM = 100;
-    int MAX_CONTAINER_NUM = 99;
 
-    FILE *originalFile;
-    FILE *copyFile;
-    FILE *torrentFile;
+    FILE *originalFile, *copyFile, *torrentFile;
 
     char buffer[CHUNK_TAM];
 
@@ -30,14 +27,23 @@ int generateTorrent(char *fileName)
     } 
     // Archivo de copia...
     char copyFileName[MAX_BUF_TAM];
-    sprintf(copyFileName, "%s_COPY", name_);
+    snprintf(copyFileName, sizeof(copyFileName), "%s_COPY", name_);
+
     fflush( stdin );
     copyFile = fopen(copyFileName,"wb");
     // Archivo de Chunks (.torrent)
     char torrentFileName[MAX_BUF_TAM];
-    sprintf(torrentFileName, "%s.torrent", name_);
+    snprintf(torrentFileName, sizeof(torrentFileName), "%s.torrent", name_);
+
     fflush( stdin );
     torrentFile = fopen(torrentFileName,"w+b");
+
+    if (copyFile == NULL || torrentFile == NULL) {
+        perror("Error opening output files.");
+        fclose(originalFile);
+        return -1;
+    }
+
     // Me posiciono al final del archivo.
     fseek(originalFile,0,SEEK_END);
     // Calculo el tamano en bytes.
@@ -61,11 +67,15 @@ int generateTorrent(char *fileName)
 	for(i; !feof(originalFile) ; i++){
         // Definiciones temprales...
         char temp_id[MAX_BUF_TAM];
-        sprintf(temp_id, "%s_%d", name_, i);
+        snprintf(temp_id, sizeof(temp_id), "%s_%d", name_, i);
+
         int len_chunk_name = strlen(temp_id);
-		printf("Nombre temporal del chunk: %s, tam: %d\n", temp_id, len_chunk_name);
-		Chunk tempChunk;		
-		strcpy(tempChunk.idChunk, temp_id);
+        printf("Nombre temporal del chunk: %s, tam: %d\n", temp_id, len_chunk_name);
+
+        Chunk tempChunk;		
+        strncpy(tempChunk.idChunk, temp_id, sizeof(tempChunk.idChunk) - 1);
+        tempChunk.idChunk[sizeof(tempChunk.idChunk) - 1] = '\0';
+
         fflush( stdin );
         // Va creando los Chunks o particiones del archivo, empezando desde 0.  
         FILE *fileChunk;     
@@ -73,11 +83,13 @@ int generateTorrent(char *fileName)
         fseek(fileChunk,0,SEEK_SET);
         //printf("%s\n", chunkFileName);
         // Si el chunk no pudo ser creado...
-        if(fileChunk == NULL){
-            printf("El chunk no puede ser creado.\n");
-            fclose(fileChunk);
+        if (fileChunk == NULL) {
+            perror("El chunk no puede ser creado.");
+            fclose(originalFile);
+            fclose(copyFile);
+            fclose(torrentFile);
             return -1;
-        } 
+        }
         // Lee de a 512 KB del archivo original, en binario.
         int bytesReaded = fread(buffer, 1, CHUNK_TAM, originalFile);
         if(bytesReaded == -1){
@@ -93,16 +105,19 @@ int generateTorrent(char *fileName)
         // Si la creacion del Chunk fue exitosa entonces calculamos su SHA y lo asignamos a la variable de la estructura Chunk.        
         char tempSHA[40];
         calculateSHA(tempChunk.idChunk, tempSHA);
-        strcpy(tempChunk.SHA, tempSHA);
+        strncpy(tempChunk.SHA, tempSHA, sizeof(tempChunk.SHA) - 1);
+        tempChunk.SHA[sizeof(tempChunk.SHA) - 1] = '\0';
+
+
         printf("SHA en generateTorrent(): %s\n", tempSHA );
         //printf("%s %s", temp_id, fileManagerInstance->chunksCont[i].SHA);        
         //Se escribe el id y sha de cada chunk del archivo .torrent
         fprintf(torrentFile,"%s\t%s\n", tempChunk.idChunk, tempChunk.SHA);
     }
 	// Se cierran los archivos, original, copia y torrent.
-	fclose(originalFile);
-	fclose(copyFile);
+    fclose(originalFile);
+    fclose(copyFile);
     fclose(torrentFile);
-	return 0;
+    return 0;
 }
 

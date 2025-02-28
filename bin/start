@@ -7,8 +7,8 @@ export COMPOSE_HTTP_TIMEOUT=360
 
 if ! docker compose ps | grep 'Up'; then
     echo "🔄 Starting all containers and attaching logs..."
-    docker compose up --remove-orphans --attach p2p_server --attach p2p_client
+    docker compose up --remove-orphans --attach p2p_server --attach p2p_client --attach torrent_generator
 else
     echo "🔄 Services already running, attaching to logs..."
-    docker compose up --no-deps --attach p2p_server --attach p2p_client
+    docker compose up --no-deps --attach p2p_server --attach p2p_client --attach torrent_generator
 fi

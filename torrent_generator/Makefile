@@ -27,9 +27,4 @@ $(STRF).o: $(STRF).c
 $(ADG).o: $(ADG).c
 	$(CC) -c $(ADG).c -o $(ADG).o
 clean:
-	rm -rf *.o Program
-
-
-
-
-	
+	rm -rf *.o $(PRO)

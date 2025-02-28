@@ -2,7 +2,7 @@ services:
   p2p_server:
     build: .
     container_name: p2p_server
-    working_dir: /usr/local/bin
+    working_dir: /app/p2p_app
     command: ["/usr/local/bin/p2p_server"]
     ports:
       - "7024:7024"
@@ -13,7 +13,7 @@ services:
   p2p_client:
     build: .
     container_name: p2p_client
-    working_dir: /usr/local/bin
+    working_dir: /app/p2p_app
     command: ["/usr/local/bin/p2p_client"]
     stdin_open: true
     tty: true
@@ -21,3 +21,14 @@ services:
       - p2p_server
     volumes:
       - ./p2p_app:/app/p2p_app
+
+  torrent_generator:
+    build: .
+    container_name: torrent_generator
+    working_dir: /app/torrent_generator
+    command: ["/usr/local/bin/torrent_generator"]
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./torrent_generator:/app/torrent_generator
+    restart: unless-stopped

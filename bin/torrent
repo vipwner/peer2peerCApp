@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$#" -lt 1 ]; then
+    echo "❌ Usage: torrent [-d|--debug] <file_path>"
+    exit 1
+fi
+
+DEBUG_MODE=0
+FILE_PATH=""
+
+# Parse arguments
+if [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
+    DEBUG_MODE=1
+    shift
+fi
+
+FILE_PATH="$1"
+
+echo "🚀 Running Torrent Generator inside the container for: $FILE_PATH"
+
+if [ "$DEBUG_MODE" -eq 1 ]; then
+    echo "🐛 Running in DEBUG mode with Valgrind..."
+    docker compose exec torrent_generator valgrind --leak-check=full --track-origins=yes /usr/local/bin/torrent_generator "$FILE_PATH"
+else
+    docker compose exec torrent_generator /usr/local/bin/torrent_generator "$FILE_PATH"
+fi
