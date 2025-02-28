@@ -53,7 +53,7 @@ char* concat_(char* char1, char char2)
     char temp[2];
     temp[0] = char2;
     temp[1] = '\0'; 
-    return concat(char1, (const char*)temp); // Explicit cast to match concat signature
+    return concat(char1, (const char*)temp);
 }
 
 void toString(int a, char *copychar)

@@ -3,12 +3,54 @@ set -e
 
 echo "🚀 Starting P2P application..."
 
-export COMPOSE_HTTP_TIMEOUT=360
+# Function to clean up on exit
+cleanup() {
+    echo "🛑 Stopping file watchers..."
+    kill $(jobs -p) 2>/dev/null || true
 
+    echo "🛑 Stopping containers..."
+    docker compose down
+
+    echo "✅ Cleanup complete."
+    exit 0
+}
+
+# Trap CTRL+C and call cleanup
+trap cleanup SIGINT
+
+# Ensure services are up
 if ! docker compose ps | grep 'Up'; then
-    echo "🔄 Starting all containers and attaching logs..."
-    docker compose up --remove-orphans --attach p2p_server --attach p2p_client --attach torrent_generator
+    echo "🔄 Starting all containers..."
+    docker compose up --remove-orphans -d
 else
-    echo "🔄 Services already running, attaching to logs..."
-    docker compose up --no-deps --attach p2p_server --attach p2p_client --attach torrent_generator
+    echo "💡 Services already running, skipping container start."
 fi
+
+echo "👀 Watching for changes & recompiling if needed..."
+
+# **P2P Server Watcher (Continuous Listening)**
+docker compose exec -T p2p_server bash -c '
+    while true; do
+        inotifywait -r -e modify,create,delete /app/p2p_app
+        echo "🔄 Changes detected in P2P app! Cleaning & recompiling..."
+        make -C /app/p2p_app clean
+        sleep 1  # Small delay to prevent immediate recompilation
+        make -C /app/p2p_app || echo "❌ Compilation failed! Waiting for next change..."
+    done
+' &
+
+# **Torrent Generator Watcher (Continuous Listening)**
+docker compose exec -T torrent_generator bash -c '
+    while true; do
+        inotifywait -r -e modify,create,delete /app/torrent_generator
+        echo "🔄 Changes detected in Torrent Generator! Cleaning & recompiling..."
+        make -C /app/torrent_generator clean
+        sleep 1  # Small delay to prevent immediate recompilation
+        make -C /app/torrent_generator || echo "❌ Compilation failed! Waiting for next change..."
+    done
+' &
+
+echo "✅ P2P application is ready!"
+
+# Wait for background jobs
+wait

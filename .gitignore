@@ -1,0 +1,4 @@
+*.o
+torrent_generator
+p2p_server
+p2p_client
