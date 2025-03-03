@@ -8,7 +8,7 @@
 #include "Torrent.h"
 /**
  * TorrentLoader TorrentLoader.h
- * 
+ *
  * @date 02/01/2015
  * @author Álvaro Jose Lobaton Restrepo. Codigo: 1130054
  * @author Jhon Jairo Pantoja. Codigo: 1125572
@@ -20,6 +20,6 @@
  * @param  chunks          [Contenedor de los chunks del archivo .torrent a ser cargado.]
  * @return int             [Correspondiente al numero de chunks del torrent.]
  */
-int loadTorrent(char* torrentFileName, Chunk *chunks);
+int loadTorrent(char *torrentFileName, Chunk *chunks);
 
 #endif

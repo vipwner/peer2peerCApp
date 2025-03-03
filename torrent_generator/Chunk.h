@@ -13,10 +13,9 @@
 /**
  * Estructura que nos permite almacenar los atributos del chunk.
  */
-typedef struct 
-{
-	char idChunk[100];
-	char SHA[40];
-}Chunk;
+typedef struct {
+    char idChunk[100];
+    char SHA[40];
+} Chunk;
 
 #endif

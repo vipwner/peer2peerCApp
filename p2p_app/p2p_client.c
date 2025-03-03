@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int main()
+{
     const int PORT = 7024;
 
     // Prevent the client from running without an interactive shell
@@ -13,7 +14,7 @@ int main() {
     }
 
     printf("Starting P2P Client. Type commands:\n");
-    
+
     while (1) {
         client_process(PORT);
     }

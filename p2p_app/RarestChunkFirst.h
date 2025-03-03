@@ -9,7 +9,7 @@
 
 /**
  * RarestChunkFirst RarestChunkFirst.h
- * 
+ *
  * @date 02/01/2015
  * @author Álvaro Jose Lobaton Restrepo. Codigo: 1130054
  * @author Jhon Jairo Pantoja. Codigo: 1125572
@@ -25,7 +25,8 @@
  * @param  nodeNumber    [Corresponde al numero de nodos.]
  * @return int           [Posicion del rarest chunk.]
  */
-int getRarestChunkFirst(char *rarestSHA, Chunk *torrentChunks, int chunkNumber, Node *nodes, int nodeNumber);
+int getRarestChunkFirst(char *rarestSHA, Chunk *torrentChunks, int chunkNumber,
+                        Node *nodes, int nodeNumber);
 /**
  * [getMinPosOf Metodo que permite obtener el la posicion del valor menor de un arreglo.]
  * @param  array [Contenedor.]
@@ -45,5 +46,6 @@ int getMinPosOf(int *array, int *posArr, int len);
  * @param  rarestSHA  [Corresponde a la cadena que contiene el SHA del rarestChunk]
  * @return int        [Correspondiente a la validacion si esta o no el SHA en dicho nodo.]
  */
-int searchNode(char *id, char *ip, char *port, Node *nodes, int nodeNumber, char *rarestSHA);
+int searchNode(char *id, char *ip, char *port, Node *nodes, int nodeNumber,
+               char *rarestSHA);
 #endif

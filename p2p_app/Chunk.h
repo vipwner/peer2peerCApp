@@ -12,13 +12,12 @@
 /**
  * Estructura que describe un chunk, permitiendonos almacenar sus atributos.
  */
-typedef struct 
-{
-	char* idChunk;
-	char* SHA;
-	FILE *file;
-	int bytesReaded;
-	int status; // Indica si esta descargado o aun esta pendiente su descarga.
-}Chunk;
+typedef struct {
+    char *idChunk;
+    char *SHA;
+    FILE *file;
+    int bytesReaded;
+    int status; // Indica si esta descargado o aun esta pendiente su descarga.
+} Chunk;
 
 #endif

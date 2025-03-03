@@ -1,11 +1,11 @@
 #ifndef PEER2PEER_H_INCLUDED
 #define PEER2PEER_H_INCLUDED
- // C LIBRARIES
+// C LIBRARIES
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <ifaddrs.h>
 #include <sys/types.h>

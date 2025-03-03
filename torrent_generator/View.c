@@ -2,7 +2,7 @@
 
 
 void getData(char *message, char *result)
-{	
-	printf("%s", message);
-    scanf("%s", result); 
+{
+    printf("%s", message);
+    scanf("%s", result);
 }

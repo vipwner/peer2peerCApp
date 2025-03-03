@@ -15,13 +15,12 @@
  * Estructura que describe un Nodo, por ende
  * para facilitar el manejo con sus atributos.
  */
-typedef struct
-{
-    char* idNode;
-    char* ipNode;
-    char* portNode;
+typedef struct {
+    char *idNode;
+    char *ipNode;
+    char *portNode;
     int chunksQ;
     Chunk *chunks;
-}Node;
+} Node;
 
 #endif

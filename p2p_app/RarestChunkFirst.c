@@ -1,44 +1,43 @@
 #include "RarestChunkFirst.h"
 
-int getRarestChunkFirst(char *rarestSHA, Chunk *torrentChunks, int chunkNumber, Node *nodes, int nodeNumber){
-	int rarestChunkDet[chunkNumber];	
-    int posArr[chunkNumber];	
-	int i = 0;
-	int j = 0;
-	int m = 0;
-	for (i = 0; i < chunkNumber; i++)
-    {
-        if(torrentChunks[i].status == 1){
-        	// Limpiamos caracteres espuria...    	
-    		(torrentChunks[i].SHA)[40] = '\0';
-        	//printf("%d. raresChunkFirst(): %s\n", i, torrentChunks[i].SHA);
-        	int coincidence = 0;
-            for (j = 0; j < nodeNumber; j++)
-            {
-                for(m = 0; m < nodes[j].chunksQ; m++)
-                {
+int getRarestChunkFirst(char *rarestSHA, Chunk *torrentChunks, int chunkNumber,
+                        Node *nodes, int nodeNumber)
+{
+    int rarestChunkDet[chunkNumber];
+    int posArr[chunkNumber];
+    int i = 0;
+    int j = 0;
+    int m = 0;
+    for (i = 0; i < chunkNumber; i++) {
+        if(torrentChunks[i].status == 1) {
+            // Limpiamos caracteres espuria...
+            (torrentChunks[i].SHA)[40] = '\0';
+            //printf("%d. raresChunkFirst(): %s\n", i, torrentChunks[i].SHA);
+            int coincidence = 0;
+            for (j = 0; j < nodeNumber; j++) {
+                for(m = 0; m < nodes[j].chunksQ; m++) {
                     if(!strncmp(nodes[j].chunks[m].SHA, torrentChunks[i].SHA, 40)) {
-                        coincidence++;                    
+                        coincidence++;
                     }
                 }
-            }        
-            if(coincidence > 0){
+            }
+            if(coincidence > 0) {
                 //printf("Coincidencia %d: %d, %s\n", i, coincidence, torrentChunks[i].SHA);
                 rarestChunkDet[i] = coincidence;
                 posArr[i] = i;
-            }else{
-            	perror("No se puede descargar el archivo por que nadie lo tiene completo.");
-            	return -1;
-            }  
-        }else if(torrentChunks[i].status == 0){
+            } else {
+                perror("No se puede descargar el archivo por que nadie lo tiene completo.");
+                return -1;
+            }
+        } else if(torrentChunks[i].status == 0) {
             rarestChunkDet[i] = -1;
             posArr[i] = i;
-        }     
+        }
     }
     puts("Paso por linea 35 RarestChunkFirst");
     int posOfRarestChunk = getMinPosOf(rarestChunkDet, posArr, chunkNumber);
     puts("Paso por linea 37 RarestChunkFirst");
-    if(posOfRarestChunk == -2){
+    if(posOfRarestChunk == -2) {
         return posOfRarestChunk;
     }
     strcpy(rarestSHA, torrentChunks[posOfRarestChunk].SHA);
@@ -48,7 +47,7 @@ int getRarestChunkFirst(char *rarestSHA, Chunk *torrentChunks, int chunkNumber, 
 
 int getMinPosOf(int *array, int *posArr, int len)
 {
-	int i, j, x;
+    int i, j, x;
     int aux_a, aux_p;
     for (i = 0; i < len -1 ; i++) {
         for (j = i + 1; j < len ; j++) {
@@ -65,28 +64,27 @@ int getMinPosOf(int *array, int *posArr, int len)
         }
     }
 
-    for(x = 0; x < len; x++){
+    for(x = 0; x < len; x++) {
         printf("%d, %d\n", posArr[x], array[x]);
-        if(array[x] > 0){
+        if(array[x] > 0) {
             printf("Resultado getMinPosOf(): %d\n", posArr[x]);
             return posArr[x];
         }
-    }    
+    }
     return -2;
 
 }
 
 
-int searchNode(char *id, char *ip, char *port, Node *nodes, int nodeNumber, char *rarestSHA)
+int searchNode(char *id, char *ip, char *port, Node *nodes, int nodeNumber,
+               char *rarestSHA)
 {
     Node possessorsNodes[100];
     int possessorsLen = 0;
     int j = 0;
     int m = 0;
-    for (j = 0; j < nodeNumber; j++)
-    {
-        for(m = 0; m < nodes[j].chunksQ; m++)
-        {
+    for (j = 0; j < nodeNumber; j++) {
+        for(m = 0; m < nodes[j].chunksQ; m++) {
             if(!strncmp(nodes[j].chunks[m].SHA, rarestSHA, 40)) {
                 // Si lo tiene entonces agrega al contenedor de nodos poseedores...
                 //sprintf(nodeToCon->idNode, "%s", nodes[j].idNode);
@@ -104,7 +102,7 @@ int searchNode(char *id, char *ip, char *port, Node *nodes, int nodeNumber, char
         }
     }
     // Obtenemos el nodo al cual pediremos el chunk por medio de un rand.
-    
+
     int random_ = rand() % possessorsLen;
     printf("NUMERO ALEATORIO: %d\n", random_);
     strcpy(id, possessorsNodes[random_].idNode);

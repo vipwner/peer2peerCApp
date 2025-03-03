@@ -18,6 +18,6 @@
  * @param fileName [Nombre del archivo.]
  * @param SHACopy  [Copia del SHA a ser obtenido.]
  */
-void calculateSHA(char* fileName, char *SHACopy);
+void calculateSHA(char *fileName, char *SHACopy);
 
 #endif

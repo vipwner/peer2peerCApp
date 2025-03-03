@@ -9,7 +9,7 @@
 
 /**
  * NodesLoader NodesLoader.h
- * 
+ *
  * @date 02/01/2015
  * @author Álvaro Jose Lobaton Restrepo. Codigo: 1130054
  * @author Jhon Jairo Pantoja. Codigo: 1125572
@@ -29,6 +29,6 @@ int loadNodes(Node *nodesContainer);
  * @param  chunks        [Arreglo de chunks.]
  * @return int           [Correspondiente a la cantidad de chunks en el nodo.]
  */
-int setChunksNode(char* content, int contentLenght, Chunk *chunks);
+int setChunksNode(char *content, int contentLenght, Chunk *chunks);
 
 #endif

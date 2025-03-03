@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -e
+
+echo "✨ Formatting all C files inside Docker containers using Astyle..."
+
+# List of services and their corresponding paths
+SERVICES=(
+    "p2p_server:/app/p2p_app"
+    "p2p_client:/app/p2p_app"
+    "torrent_generator:/app/torrent_generator"
+)
+
+# Astyle formatting options
+ASTYLE_OPTIONS="--style=kr --indent=spaces=4 --attach-closing-while --max-code-length=80 --align-pointer=name --suffix=none"
+
+# Run formatting in each container
+for SERVICE_PATH in "${SERVICES[@]}"; do
+    IFS=":" read -r SERVICE DIR <<< "$SERVICE_PATH"
+
+    echo "🔹 Formatting in container: $SERVICE ($DIR)"
+
+    # Run astyle inside the container
+    docker-compose exec -T "$SERVICE" bash -c "
+        find $DIR -type f \( -name '*.c' -o -name '*.h' \) -exec astyle $ASTYLE_OPTIONS {} +
+    "
+done
+
+echo "✅ Astyle formatting complete!"
